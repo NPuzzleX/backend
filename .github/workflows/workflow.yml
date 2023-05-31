@@ -1,0 +1,38 @@
+on:
+  push:
+    branches: ["master"]
+    
+jobs:
+ build:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout master
+      uses: actions/checkout@main
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - name: Build container image
+      run: docker build -t registry.digitalocean.com/npuzzle/main:backend-$(echo $GITHUB_SHA | head -c7) .
+    - name: Log in to DigitalOcean Container Registry with short-lived credentials
+      run: doctl registry login --expiry-seconds 1200
+    - name: Push image to DigitalOcean Container Registry
+      run: docker push registry.digitalocean.com/npuzzle/main:backend-$(echo $GITHUB_SHA | head -c7)
+    - name: Update deployment file <IMAGE>
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/npuzzle/main:backend-'${TAG}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Update deployment file <MONGOUSER>
+      run: sed -i 's|<MONGOUSER>|'${{ secrets.MONGOUSER }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Update deployment file <MONGOPASS>
+      run: sed -i 's|<MONGOPASS>|'${{ secrets.MONGOPASS }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Update deployment file <JWTSECRET>
+      run: sed -i 's|<JWTSECRET>|'${{ secrets.JWTSECRET }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Update deployment file <FBAUTHENC>
+      run: sed -i 's|<FBAUTHENC>|'${{ secrets.FB_AUTH_ENC }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Update deployment file <FBAUTHKEY>
+      run: sed -i 's|<FBAUTHKEY>|'${{ secrets.FB_AUTH_KEY }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Save DigitalOcean kubeconfig with short-lived credentials
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.DO_CLUSTER_NAME }}
+    - name: Deploy to DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+    - name: Verify deployment
+      run: kubectl rollout status deployment/npuzzle-backend

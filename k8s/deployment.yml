@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: npuzzlex-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: npuzzlex-backend
+  template:
+    metadata:
+      labels:
+        name: npuzzlex-backend
+    spec:
+      containers:
+      - name: application
+        image: npuzzlex-backend
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8080
+        env:
+          - name: mongoUser
+            value: <MONGOUSER>
+          - name: mongoPass
+            value: <MONGOPASS>
+          - name: jwtSecret
+            value: <JWTSECRET>
