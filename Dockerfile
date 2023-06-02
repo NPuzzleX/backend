@@ -10,16 +10,16 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /npuzzlex-be-acc
+RUN go build -o /npuzzlex-backend
 
 FROM gcr.io/distroless/base-debian11
 
 WORKDIR /
 
-COPY --from=build /npuzzlex-be-acc /npuzzlex-be-acc
+COPY --from=build /npuzzlex-backend /npuzzlex-backend
 
 EXPOSE 8080
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/npuzzlex-be-acc"]
+ENTRYPOINT ["/npuzzlex-backend"]

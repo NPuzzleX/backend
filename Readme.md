@@ -3,8 +3,8 @@ To serveapply
 - go run .
 
 To docker
-- docker build -t npuzzlex-be-acc .
-- docker run -dp 8080:8080 npuzzlex-be-acc
+- docker build -t npuzzlex-backend .
+- docker run -dp 8080:8080 npuzzlex-backend
 
 To kubernetes
 Make sure kubectl points to the correct context (desktop dev or DO k8s deploy)
