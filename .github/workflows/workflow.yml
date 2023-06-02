@@ -13,13 +13,13 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
     - name: Build container image
-      run: docker build -t registry.digitalocean.com/npuzzle/main:backend-$(echo $GITHUB_SHA | head -c7) .
+      run: docker build -t registry.digitalocean.com/mw-server/main:npuzzle-backend-$(echo $GITHUB_SHA | head -c7) .
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
     - name: Push image to DigitalOcean Container Registry
-      run: docker push registry.digitalocean.com/npuzzle/main:backend-$(echo $GITHUB_SHA | head -c7)
+      run: docker push registry.digitalocean.com/mw-server/main:npuzzle-backend-$(echo $GITHUB_SHA | head -c7)
     - name: Update deployment file <IMAGE>
-      run: sed -i 's|<IMAGE>|registry.digitalocean.com/npuzzle/main:backend-'$(echo $GITHUB_SHA | head -c7)'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
+      run: sed -i 's|<IMAGE>|registry.digitalocean.com/mw-server/main:npuzzle-backend-'$(echo $GITHUB_SHA | head -c7)'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
     - name: Update deployment file <MONGOUSER>
       run: sed -i 's|<MONGOUSER>|'${{ secrets.MONGOUSER }}'|' $GITHUB_WORKSPACE/k8s/auto-deployment.yml
     - name: Update deployment file <MONGOPASS>
