@@ -128,7 +128,7 @@ func main() {
 	initClient()
 
 	router := gin.Default()
-	var allowedHost = [...]string{"http://127.0.0.1", "http://localhost", "http://178.128.219.41", "https://npuzzlex.3mworkshop.com", "http://npuzzlex.3mworkshop.com"}
+	var allowedHost = [...]string{"http://127.0.0.1", "http://localhost", "http://178.128.219.41", "https://3mworkshop.com", "http://3mworkshop.com"}
 
 	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT"},
