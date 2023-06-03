@@ -146,9 +146,9 @@ func main() {
 	router.POST("/account", postAccHome)
 	router.GET("/account", getAccHome)
 
-	router.POST("/puzzle/", postPuzzleHome)
-	router.GET("/puzzle/", getPuzzleHome)
-	router.PUT("/puzzle/", putPuzzleHome)
+	router.POST("/puzzle", postPuzzleHome)
+	router.GET("/puzzle", getPuzzleHome)
+	router.PUT("/puzzle", putPuzzleHome)
 	router.GET("/puzzle/state", getStateHome)
 	router.POST("/puzzle/state", postStateHome)
 	router.POST("/puzzle/favourite", postFavHome)
